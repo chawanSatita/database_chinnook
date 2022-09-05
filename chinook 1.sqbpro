@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/lenovo/Desktop/SQL script/book store.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="125"/><column_width id="3" width="586"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,9:mainbook_shop"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="albums" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="84"/><column index="2" value="300"/><column index="3" value="76"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="101 EP4.1">SELECT 
+	FirstName,
+	LastName,
+	FirstName || ' '|| LastName as fullname,
+	lower(FirstName) || '@company.com' as Email
+	from Customers;</sql><sql name="101 EP 4.2">SELECT 
+	name, 
+	round(Milliseconds /60000.0 ,2) as minute, 
+	round(Bytes / (1024 * 1024.0) ,2) as mb
+from tracks;</sql><sql name="101 EP 5">SELECT company,
+	CASE
+		when company is not null then 'coperate'
+		else ' End customer'
+	END as segment
+FROM customers;</sql><sql name="101 EP 6">SELECT InvoiceDate,
+ CAST(strftime ('%Y',InvoiceDate)as INT) as year,
+ strftime ('%m' , InvoiceDate) as month,
+ strftime ('%d' , InvoiceDate) as day,
+ strftime ('%Y-%m',InvoiceDate) as month_id
+FROM invoices
+ WHERE year = 2010;</sql><sql name=" 101EP7">SELECT * from artists
+JOIN albums
+on artists.ArtistId= albums.AlbumId
+where artists.ArtistId =50;
+</sql><sql name="101  EP 9">SELECT 
+	art.artistId,
+	art.name,
+	alb.title,
+	tra.name,
+	tra.composer
+from artists  as art
+JOIN albums as alb
+on art.ArtistId = alb.ArtistId
+JOIN tracks as tra
+on alb.ArtistId = tra.AlbumId
+
+where art.ArtistId ='50';</sql><sql name="101 EP 10">SELECT name random FROM tracks
+order by random()
+ limit 10; 
+
+
+
+
+</sql><sql name="102 ep1">--SELECT* from customers
+--WHERE Country='USA' or Country = 'Canada';
+
+
+
+
+SELECT* from customers
+WHERE not (Country='USA' or Country = 'Canada' or Country ='France');</sql><sql name="102 EP 2">/*SELECT * FROM customers
+where Country = 'Brazil' or 
+Country='Germany' or 
+Country = 'Norway';*/
+
+
+--SELECT * FROM customers
+--where Country in ('Brazil', 'Germany', 'Norway'); 
+
+
+--SELECT * FROM customers
+--where Country NOT in ('Brazil', 'Germany', 'Norway'); 
+
+--SELECT * FROM customers
+--where CustomerId BETWEEN 5 and  10;
+
+/*SELECT * FROM invoices
+where InvoiceDate BETWEEN '2009-01-01 00:00:00' 
+and '2009-02-31 00:00:00';*/
+
+SELECT * FROM customers
+where Company is NOT NULL;
+</sql><sql name="102 ep3">SELECT firstname, lastname, country, email, phone from customers
+where firstname like 'J__n';</sql><sql name="102 EP 4">-- null 
+select 
+	Company,
+	coalesce(company, 'End customer') as 'Company clean',
+	CASE when Company is null then 'end customer'
+		else 'corporate'
+		end as 'company clean2'
+from customers;
+</sql><sql name="102 ep 5">--SELECT * from artists, albums
+--where  artists.ArtistId = albums.ArtistId;
+
+
+/*SELECT * from artists JOIN albums
+where  artists.ArtistId = albums.ArtistId;*/
+
+/*SELECT
+	artists.ArtistId,
+	artists.Name as artist_mane,
+	albums.Title as album_name
+FROM artists, albums
+where artists.ArtistId = albums.ArtistId
+	and artists.ArtistId in (8,100,120);*/
+	
+	
+SELECT
+	artists.ArtistId,
+	artists.Name as artist_mane,
+	albums.Title as album_name,
+	tracks.Name as song_name
+FROM artists, albums, tracks
+where artists.ArtistId = albums.ArtistId
+AND albums.AlbumId=tracks.AlbumId
+	and artists.ArtistId in (8,100,120)</sql><sql name="102 EP 6">SELECT 
+	round(AVG(Milliseconds),2) as AVG_mill,
+	sum(Milliseconds) sum_mill,
+	min (Milliseconds) min_mill,
+	max (Milliseconds) max_mill,
+	count(Milliseconds) count_mill
+from tracks;</sql><sql name="102 EP 7">SELECT count  (DISTINCT country), count(*) FROM customers;</sql><sql name="102 ep8">--select Country, count (*) as count_country from customers
+--GROUP by Country;
+
+select genres.Name, count(*) as count_song from genres,tracks
+where genres.GenreId = tracks.GenreId
+GROUP by genres.Name;</sql><sql name="102 ep9">select 
+	genres.Name, 
+	count(*) as count_song 
+from genres,tracks
+where genres.GenreId = tracks.GenreId and genres.Name &lt;&gt; 'Rock'
+GROUP by genres.Name
+HAVING count(*) &gt;= 100;</sql><sql name="102 EP 10">SELECT genres.Name, count(*) 
+FROM genres
+JOIN tracks
+	on genres.GenreId = tracks.GenreId
+GROUP by genres.Name
+ORDER by count(*) DESC limit 5 ;</sql><sql name="103 ep1">SELECT 
+	A.ArtistId,
+	A.name artist_name,
+	B.Title albumName
+FROM artists A, albums B 
+where A.ArtistId = B.ArtistId
+and A.name Like 'C%';</sql><sql name="103 EP2">SELECT 
+	A.ArtistId,
+	A.name artist_name,
+	B.Title albumName
+FROM artists A 
+INNER JOIN albums B on A.ArtistId = B.ArtistId
+INNER JOIN tracks C on B.AlbumId = C.AlbumId
+where A.name Like 'Aero%';
+
+
+-- change
+/*A.ArtistId,
+	A.name artist_name,
+	B.Title albumName
+	To
+	count(*) aerosmith_song 
+count aerosmith_song */</sql><sql name="103 ep4 (New database)">-- create two tables
+CREATE TABLE book_shop (
+	id INT,
+  name TEXT,
+  release_year INT
+);
+  
+CREATE TABLE favourite_book (
+  id INT, 
+  author TEXT,
+  reviews REAL
+);
+
+INSERT INTO book_shop VALUES
+  (1, 'Think Like A Freak', 2014),
+  (2, 'Ultralearning', 2019),
+  (3, 'Blue Ocean Strategy', 2015),
+  (4, 'The Power of Habit', 2012),
+  (5, 'Outliers', 2008);
+
+INSERT INTO favourite_book VALUES
+  (1, 'Steven D. Levitt, Stephen J. Dubner', 1904),
+  (4, 'Charles Duhigg', 12007),
+  (5, 'Malcolm Gladwell', 12063);</sql><sql name="103 ep 4.2">SELECT * FROM book_shop;
+SELECT * from favourite_book;</sql><sql name="103 ep5 inner join">SELECT * FROM book_shop A
+inner join favourite_book B 
+		on A.id = B.id;
+
+</sql><sql name="103 EP 5 left join">SELECT * FROM book_shop A
+LEFT join favourite_book B 
+		on A.id = B.id;</sql><sql name="cross join crate table EP6">-- create two tables: ranks and suits
+-- reference: https://www.sqlitetutorial.net/sqlite-cross-join/
+CREATE TABLE ranks (
+    rank TEXT NOT NULL
+);
+
+CREATE TABLE suits (
+    suit TEXT NOT NULL
+);
+
+INSERT INTO ranks(rank) 
+VALUES('2'),('3'),('4'),('5'),('6'),('7'),('8'),('9'),('10'),('J'),('Q'),('K'),('A');
+
+INSERT INTO suits(suit) 
+VALUES('Clubs'),('Diamonds'),('Hearts'),('Spades');</sql><sql name="cross join">--SELECT * from ranks;
+
+--cross JOIN
+select * from ranks cross JOIN suits ORDER by 2;</sql><sql name="103 EP7 create table">-- create a new employee table
+CREATE TABLE employee (
+    id INT,
+    name TEXT,
+    level TEXT,
+    manager_id INT 
+);
+
+INSERT INTO employee VALUES 
+    (1, 'David', 'CEO', NULL),
+    (2, 'John', 'SVP', 1),
+    (3, 'Mary', 'VP', 2),
+    (4, 'Adam', 'VP', 2),
+    (5, 'Scott', 'Manager', 3),
+    (6, 'Louise', 'Manager', 3),
+    (7, 'Kevin', 'Manager', 4),
+    (8, 'Takeshi', 'Manager', 4),
+    (9, 'Joe', 'AM', 6),
+    (10, 'Anna', 'AM', 7);</sql><sql name="103 EP7">-- self JOIN
+select 
+	e1.name staff,
+	e1.level staff_level,
+	e2.name manager,
+	e2.level menager_level,
+	e1.name || 'report to' || e2.name as comment
+	FROM employee e1, employee e2
+where e1.manager_id=e2.id;</sql><sql name="103 EP8">/*SELECT id FROM book_shop
+INTERSECT
+SELECT id FROM favourite_book;*/
+
+SELECT id FROM book_shop
+EXCEPT
+SELECT id FROM favourite_book;</sql><sql name="103 Ep 9 create table">CREATE TABLE book_shop_new (
+  	id INT,
+  	name TEXT,
+	 	release_year INT
+  );
+
+INSERT INTO book_shop_new VALUES
+  (6, 'Business Data Science', 2020),
+  (7, 'Subliminal', 2018),
+  (8, 'Good Strategy Bad Strategy', 2015);</sql><sql name="103 EP9">SELECT * FROM book_shop
+UNION ALL
+SELECT * FROM book_shop_new;
+</sql><sql name="SQL 32"></sql><current_tab id="30"/></tab_sql></sqlb_project>
