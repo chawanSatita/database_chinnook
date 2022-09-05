@@ -1,0 +1,38 @@
+--who has track more than or equal 20 and can make money
+
+WITH track_20 as(
+select
+        ar.name AS artist ,
+        Tr.name as song_name,
+  	    count(Tr.name) as count_song ,
+		tr.trackid ,
+		invt.unitprice ,
+		invt.quantity as Qa
+from artists as ar
+left join albums al 		on al.artistid=ar.artistid
+left join tracks Tr 		on al.albumid= Tr.albumid
+LEFT join invoice_items invt on tr.trackid = invt.trackid
+group by 1
+HAVING count_song>=20
+ORDER by 5 DESC)
+select * from track_20 
+WHERE Qa  is not null;
+
+
+
+-- who can make monmy in order.
+with most_art as
+ (SELECT 
+ 	art.name ,
+ 	tr.name,
+	invs.total total,
+  	sum(invs.total) as sum_total
+ from artists art
+ left join albums alb ON alb.artistid=art.ArtistId
+ left join tracks tr on tr.albumid= alb.albumid
+ left join invoice_items invt on invt.trackid = tr.trackid
+ left join invoices invs on invs.invoiceid = invt.invoiceid
+group by 1
+order by  4 DESC) 
+  SELECT * from most_art
+  WHERE total and sum_total is not null ;
